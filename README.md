@@ -1,66 +1,83 @@
-# codecon
+# Desafio Técnico: Performance e Análise de Dados via API
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## Objetivo
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Você tem 1 hora para criar uma API que recebe um arquivo JSON com 100.000 usuários e oferece endpoints performáticos e bem estruturados para análise dos dados.
 
-## Running the application in dev mode
+- [Exemplos de respostas esperadas na API](https://github.com/codecon-dev/desafio-1-1s-vs-3j/blob/main/exemplos-endpoints.json)
+- [Arquivo com 100 mil usuários para importar](https://drive.google.com/file/d/1zOweCB2jidgHwirp_8oBnFyDgJKkWdDA/view?usp=sharing)
+- [Arquivo com 1 mil usuário para teste](https://drive.google.com/file/d/1BX03cWxkvB_MbZN8_vtTJBDGiCufyO92/view?usp=sharing)
 
-You can run your application in dev mode that enables live coding using:
+---
 
-```shell script
-./mvnw quarkus:dev
+## JSON de entrada
+
+O JSON contém uma lista de usuários com a seguinte estrutura:
+
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "age": "int",
+  "score": "int",
+  "active": "bool",
+  "country": "string",
+  "team": {
+    "name": "string",
+    "leader": "bool",
+    "projects": [{ "name": "string", "completed": "bool" }]
+  },
+  "logs": [{ "date": "YYYY-MM-DD", "action": "login/logout" }]
+}
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+---
 
-## Packaging and running the application
+## Endpoints obrigatórios
 
-The application can be packaged using:
+### `POST /users`
 
-```shell script
-./mvnw package
-```
+Recebe e armazena os usuários na memória. Pode simular um banco de dados em memória.
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### `GET /superusers`
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+- Filtro: `score >= 900` e `active = true`
+- Retorna os dados e o tempo de processamento da requisição.
 
-If you want to build an _über-jar_, execute the following command:
+### `GET /top-countries`
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+- Agrupa os superusuários por país.
+- Retorna os 5 países com maior número de superusuários.
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### `GET /team-insights`
 
-## Creating a native executable
+- Agrupa por `team.name`.
+- Retorna: total de membros, líderes, projetos concluídos e % de membros ativos.
 
-You can create a native executable using:
+### `GET /active-users-per-day`
 
-```shell script
-./mvnw package -Dnative
-```
+- Conta quantos logins aconteceram por data.
+- Query param opcional: `?min=3000` para filtrar dias com pelo menos 3.000 logins.
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+### `GET /evaluation`
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+Ele deve executar uma autoavaliação dos principais endpoints da API e retornar um relatório de pontuação.
 
-You can then execute your native executable with: `./target/codecon-1.0.0-SNAPSHOT-runner`
+A avaliação deve testar:
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+- Se o status retornado é 200
+- O tempo em milisegundos de resposta
+- Se o retorno é um JSON válido
 
-## Related Guides
+Esse endpoint pode rodar scripts de teste embutidos no próprio projeto e retornar um JSON com os resultados. Ele será utilizado para validar a entrega de forma automática e rápida.
 
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
+---
 
-## Provided Code
+## Requisitos Técnicos
 
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+- Tempo de resposta < 1s por endpoint.
+- Todos os endpoints precisam retornar o tempo de processamento (em milissegundos) e a timestamp da requisição
+- Código limpo, modular, com funções bem definidas.
+- Pode usar qualquer linguagem/framework.
+- Documentação ou explicação final vale pontos bônus.
+- Não pode usar IA.
