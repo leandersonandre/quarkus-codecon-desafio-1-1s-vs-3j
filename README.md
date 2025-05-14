@@ -1,5 +1,9 @@
 # Desafio Técnico: Performance e Análise de Dados via API
 
+## Minha Solução
+
+Java + Quarkus
+
 ## Objetivo
 
 Você tem 1 hora para criar uma API que recebe um arquivo JSON com 100.000 usuários e oferece endpoints performáticos e bem estruturados para análise dos dados.
